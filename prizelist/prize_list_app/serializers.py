@@ -1,16 +1,38 @@
+from django.contrib.auth.models import User
 from rest_framework import serializers
 from prize_list_app.models import Shop, Branch, Buyer, PrizeList, PrizeListItem, Order, OrderItem
 
+
+class UserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = "__all__"
+
+    def create(self, validated_data):
+        user = User(
+                username=validated_data['username'],
+                password=validated_data['password']
+        )
+        user.set_password(validated_data['password'])
+        user.save()
+        return user
+
 class ShopSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Shop
         fields = "__all__"
 
 class BranchSerializer(serializers.ModelSerializer):
-
+   
      class Meta:
         model = Branch
         fields = "__all__"
+     
+     
+
+
 
 class BuyerSerializer(serializers.ModelSerializer):
 

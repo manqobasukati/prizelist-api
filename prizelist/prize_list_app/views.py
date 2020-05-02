@@ -1,10 +1,12 @@
 from django.shortcuts import render
 from django.http import Http404
+from django.contrib.auth.models import User
 
 from rest_framework.parsers import FileUploadParser
 from rest_framework.response import Response
 from rest_framework import viewsets, status, generics, mixins
 from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 
 from prize_list_app.models import Shop, Branch, Buyer, PrizeList, PrizeListItem, Order, OrderItem
 from prize_list_app.serializers import *
@@ -13,6 +15,9 @@ from pandas import pandas as pd
 
 from prize_list_app.data_handler_funcs import get_items
 
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
 class ShopViewSet(viewsets.ModelViewSet):
     queryset = Shop.objects.all()
@@ -56,12 +61,12 @@ class MyView:
         except PrizeList.DoesNotExist:
             raise Http404
 
-
 class BranchView(APIView, MyView):
     queryset = Branch.objects.all()
     serializer_class = BranchSerializer
 
     def get(self,request,pk):
+        
        shop = self.get_shop(pk)
        branches = Branch.objects.filter(shop=shop)
        serializer = BranchSerializer(branches, many=True)
@@ -80,7 +85,6 @@ class BranchDetailView(APIView, MyView):
         branch = self.get_branch(kwargs['branch_id'])
         serializer = BranchSerializer(branch)
         return Response(serializer.data)
-
 
 class PrizeListView(APIView, MyView):
     parser_class = (FileUploadParser,)
@@ -133,6 +137,7 @@ class PrizeListItemViewSet(viewsets.ModelViewSet):
 class OrderView(APIView,MyView):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
+    permission_classes = (IsAuthenticated,)
 
     def get(self,request,**kwargs):
         orders = Order.objects.filter(shop=self.get_shop(kwargs['shop_id']),

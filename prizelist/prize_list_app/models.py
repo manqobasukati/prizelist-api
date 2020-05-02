@@ -1,5 +1,10 @@
 from django.db import models
+from django.contrib.auth.models import User
 from datetime import date, datetime
+from prizelist import settings
+
+
+
 
 class Shop(models.Model):
     name = models.CharField(max_length=50)
@@ -8,16 +13,19 @@ class Branch(models.Model):
     name = models.CharField(max_length=50)
     shop = models.ForeignKey(Shop,on_delete=models.CASCADE)
     location = models.CharField(max_length=100)
+    branch_user = models.OneToOneField(User,on_delete=models.CASCADE)
+   
 
 class Buyer(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=100)
     phone_number = models.IntegerField()
     location = models.CharField(max_length=100)
+    buyer_user = models.OneToOneField(User,on_delete=models.CASCADE)
 
 class PrizeList(models.Model):
-    shop = models.ForeignKey(Shop,related_name='shop',on_delete=models.CASCADE)
+    shop = models.ForeignKey(Shop,related_name='prize_list',on_delete=models.CASCADE)
     prize_list_file = models.FileField(blank=False,default=False)
-    branch = models.ForeignKey(Branch,related_name='branch',on_delete=models.CASCADE)
+    branch = models.ForeignKey(Branch,related_name='prize_list',on_delete=models.CASCADE)
     date_submitted = models.DateField(date.today)
     date_valid_to = models.DateField(default=date.today)
 

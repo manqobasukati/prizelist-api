@@ -8,12 +8,13 @@ from prizelist import settings
 
 class Shop(models.Model):
     name = models.CharField(max_length=50)
+    shop_user = models.OneToOneField(User,on_delete=models.CASCADE)
 
 class Branch(models.Model):
     name = models.CharField(max_length=50)
     shop = models.ForeignKey(Shop,on_delete=models.CASCADE)
     location = models.CharField(max_length=100)
-    branch_user = models.OneToOneField(User,on_delete=models.CASCADE)
+    
    
 
 class Buyer(models.Model):

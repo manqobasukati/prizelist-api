@@ -76,6 +76,8 @@ class BranchView(APIView, MyView):
         serializer = BranchSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
+            shop = self.get_shop(pk=data['shop']['id'])
+            serializer.save(shop=shop)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

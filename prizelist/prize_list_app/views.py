@@ -19,16 +19,21 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-class ShopViewSet(viewsets.ModelViewSet):
-    queryset = Shop.objects.all()
-    serializer_class = ShopSerializer
+
 
 class MyView:
+
 
     def get_object(self, pk):
         try:
             return PrizeList.objects.get(pk=pk)
         except PrizeList.DoesNotExist:
+            raise Http404
+
+    def get_user(self, pk):
+        try:
+            return User.objects.get(pk=pk)
+        except User.DoesNotExist:
             raise Http404
 
     def get_branch(self,pk):
@@ -61,12 +66,29 @@ class MyView:
         except PrizeList.DoesNotExist:
             raise Http404
 
+class ShopView(APIView, MyView):
+    queryset = Shop.objects.all()
+    serializer_class = ShopSerializer
+
+    def get(self,request):
+        shops = Shop.objects.all()
+        serializer = ShopSerializer(shops, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        data = request.data
+        serializer = ShopSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 class BranchView(APIView, MyView):
     queryset = Branch.objects.all()
     serializer_class = BranchSerializer
 
     def get(self,request,pk):
-        
        shop = self.get_shop(pk)
        branches = Branch.objects.filter(shop=shop)
        serializer = BranchSerializer(branches, many=True)

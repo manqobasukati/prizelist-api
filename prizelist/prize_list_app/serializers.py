@@ -19,10 +19,21 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
 class ShopSerializer(serializers.ModelSerializer):
-
+    shop_user = UserSerializer()
     class Meta:
         model = Shop
         fields = "__all__"
+
+    def create(self,validated_data):
+        user_data = validated_data.get('shop_user')
+        user_serialize = UserSerializer(data=user_data)
+        if user_serialize.is_valid():
+             user_object = user_serialize.save()
+             shop = Shop.objects.create(shop_user=user_object, name=validated_data.get('name'))
+             return shop
+  
+
+
 
 class BranchSerializer(serializers.ModelSerializer):
      shop = ShopSerializer(read_only=True)

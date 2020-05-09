@@ -6,7 +6,6 @@ from prize_list_app import views
 
 router = DefaultRouter()
 router.register(r'users',views.UserViewSet)
-router.register(r'shops',views.ShopViewSet)
 router.register(r'buyers',views.BuyerViewSet)
 router.register(r'prize-list-item',views.PrizeListItemViewSet)
 
@@ -14,6 +13,7 @@ router.register(r'prize-list-item',views.PrizeListItemViewSet)
 
 urlpatterns = [
     path('',include(router.urls)),
+    path('shops/',views.ShopView.as_view()),
     path('shops/<int:pk>/branches',views.BranchView.as_view()),
     path('shops/<int:pk>/branches/<int:branch_id>',views.BranchDetailView.as_view()),
     path('shops/<int:shop_id>/branches/<int:branch_id>/prize-lists/', views.PrizeListView.as_view()),

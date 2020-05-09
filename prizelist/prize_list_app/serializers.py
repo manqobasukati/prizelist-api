@@ -25,10 +25,17 @@ class ShopSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 class BranchSerializer(serializers.ModelSerializer):
-   
+     shop = ShopSerializer(read_only=True)
      class Meta:
         model = Branch
         fields = "__all__"
+
+     
+#      def create(self,validated_data):
+#         print(validated_data)
+#         branch_data = validated_data.pop('shop')
+#         shop = Shop.objects.get(**validated_data)
+#         return Branch(shop=shop,**branch_data)
      
      
 

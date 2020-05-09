@@ -73,9 +73,9 @@ class BranchView(APIView, MyView):
        return Response(serializer.data)
 
     def post(self,request,pk):
-        serializer = BranchSerializer(data=request.data)
+        data = request.data
+        serializer = BranchSerializer(data=data)
         if serializer.is_valid():
-            serializer.save()
             shop = self.get_shop(pk=data['shop']['id'])
             serializer.save(shop=shop)
             return Response(serializer.data, status=status.HTTP_201_CREATED)

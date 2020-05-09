@@ -12,7 +12,7 @@ class Shop(models.Model):
 
 class Branch(models.Model):
     name = models.CharField(max_length=50)
-    shop = models.ForeignKey(Shop,on_delete=models.CASCADE)
+    shop = models.ForeignKey(Shop,related_name='shop',on_delete=models.CASCADE)
     location = models.CharField(max_length=100)
     
    

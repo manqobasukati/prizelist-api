@@ -27,7 +27,8 @@ class PrizeList(models.Model):
     shop = models.ForeignKey(Shop,related_name='prize_list',on_delete=models.CASCADE)
     prize_list_file = models.FileField(blank=False,default=False)
     branch = models.ForeignKey(Branch,related_name='prize_list',on_delete=models.CASCADE)
-    date_submitted = models.DateField(date.today)
+    date_submitted = models.DateField(default=date.today)
+    active = models.BooleanField(default=True)
     date_valid_to = models.DateField(default=date.today)
 
 

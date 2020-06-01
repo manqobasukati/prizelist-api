@@ -67,7 +67,7 @@ class PrizeListSerializer(serializers.ModelSerializer):
      prize_list_item = PrizeListItemSerializer(many=True,read_only=True)
      class Meta:
         model = PrizeList
-        fields = ['date_submitted','shop', 'date_valid_to','prize_list_item','id','branch']
+        fields = ['date_submitted','shop', 'date_valid_to','prize_list_item','id','branch','active']
 
 
 

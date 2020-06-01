@@ -119,16 +119,25 @@ class PrizeListView(APIView, MyView):
 
         serializer = PrizeListSerializer(data=request.data)
         my_file =  request.FILES['prize_list']
+        print(request.data)
         if serializer.is_valid():
             prize_list_data = get_items(file_name=my_file)
             serializer_object = serializer.save()
             prize_list = self.get_object(serializer_object.id)
+            PrizeList.objects.filter(
+                                     shop=self.get_shop(kwargs['shop_id']),
+                                     branch=self.get_branch(kwargs['branch_id'])
+                                     ).exclude(
+                                         id=serializer_object.id
+                                         ).update(active=False)
+            
             for i in prize_list_data:
                 prize_list_item = PrizeListItem(category=i['category'],label=i['label'],
                                                 prize=i['prize'],prize_list=prize_list,shop=self.get_shop(kwargs['shop_id']),
-                                                branch=self.get_branch(kwargs['branch_id'])
+                                                branch=self.get_branch(kwargs['branch_id']),
                                                 )
                 prize_list_item.save()
+               
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
